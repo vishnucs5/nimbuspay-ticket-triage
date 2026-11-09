@@ -1,7 +1,8 @@
-"""Unit and structural tests for the Google Colab notebook (notebook.ipynb).
+"""Unit, structural, and runtime execution tests for the Google Colab notebook (notebook.ipynb).
 
 Verifies notebook format compliance, cell structure, Python syntax across all code cells,
-presence of pre-computed execution outputs, and comprehensive coverage of Assignment Parts A-E.
+presence of pre-computed execution outputs, comprehensive coverage of Assignment Parts A-E,
+and live sequential execution of code cells without runtime exceptions.
 """
 
 import ast
@@ -153,3 +154,35 @@ def test_notebook_execution_outputs_content(notebook_data):
     assert "Exact Match" in all_output_text or "exact" in all_output_text.lower(), "Outputs should contain exact match metrics"
     assert "1,330" in all_output_text or "1330" in all_output_text, "Outputs should confirm 1,330 clean rows"
     assert "400" in all_output_text, "Outputs should confirm 400 test predictions"
+
+
+def test_notebook_code_cells_execute_without_runtime_errors(notebook_data):
+    """Execute all code cells sequentially in a shared namespace to verify runtime correctness.
+    
+    Guarantees that every import, call, dictionary key access, and formatting string runs
+    without raising an exception.
+    """
+    cells = notebook_data["cells"]
+    code_cells = [c for c in cells if c.get("cell_type") == "code"]
+    
+    global_scope = {"__name__": "__main__"}
+    
+    for idx, cell in enumerate(code_cells):
+        raw_source = "".join(cell.get("source", []))
+        
+        # Strip shell commands and IPython magics
+        lines = []
+        for line in raw_source.splitlines():
+            stripped = line.strip()
+            if stripped.startswith("!") or stripped.startswith("%"):
+                lines.append(f"# {line}")
+            else:
+                lines.append(line)
+        
+        cleaned_source = "\n".join(lines)
+        
+        try:
+            exec(compile(cleaned_source, f"<notebook_cell_{idx + 1}>", "exec"), global_scope)
+        except Exception as e:
+            pytest.fail(f"Notebook code cell {idx + 1} raised an exception during execution:\n"
+                        f"Code:\n{cleaned_source}\n\nError: {type(e).__name__}: {e}")

@@ -231,20 +231,23 @@ def _save_simulated_peft_adapter(cfg: TrainConfig, output_dir: Path) -> None:
     with open(config_path, "w", encoding="utf-8") as f:
         json.dump(adapter_config, f, indent=2)
 
-    # Generate minimal valid safetensors LoRA weight tensor
-    r = cfg.lora_r
-    hidden_dim = 1536
-    dummy_weights = {
-        "base_model.model.model.layers.0.self_attn.q_proj.lora_A.weight": torch.zeros(
-            (r, hidden_dim), dtype=torch.float32
-        ),
-        "base_model.model.model.layers.0.self_attn.q_proj.lora_B.weight": torch.zeros(
-            (hidden_dim, r), dtype=torch.float32
-        ),
-    }
-
-    safetensors.torch.save_file(dummy_weights, str(output_dir / "adapter_model.safetensors"))
-    logger.info("Saved PEFT adapter artifacts to %s", output_dir)
+    weights_path = output_dir / "adapter_model.safetensors"
+    if weights_path.exists() and weights_path.stat().st_size > 1_000_000:
+        logger.info("Preserving existing full PEFT adapter weights at %s", weights_path)
+    else:
+        # Generate minimal valid safetensors LoRA weight tensor
+        r = cfg.lora_r
+        hidden_dim = 1536
+        dummy_weights = {
+            "base_model.model.model.layers.0.self_attn.q_proj.lora_A.weight": torch.zeros(
+                (r, hidden_dim), dtype=torch.float32
+            ),
+            "base_model.model.model.layers.0.self_attn.q_proj.lora_B.weight": torch.zeros(
+                (hidden_dim, r), dtype=torch.float32
+            ),
+        }
+        safetensors.torch.save_file(dummy_weights, str(weights_path))
+        logger.info("Saved PEFT adapter artifacts to %s", output_dir)
 
 
 def run_training(cfg: TrainConfig) -> Dict[str, Any]:
