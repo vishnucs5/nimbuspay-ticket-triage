@@ -70,7 +70,7 @@ class TriageDataset(Dataset):
 
 
 class TriageDataCollator:
-    """Data collator with dynamic padding for input_ids, attention_mask, and labels."""
+    """Data collator with dynamic padding for input_ids, attention_mask, labels, and weights."""
 
     def __init__(self, pad_token_id: int) -> None:
         self.pad_token_id = pad_token_id
@@ -81,6 +81,8 @@ class TriageDataCollator:
         padded_input_ids = []
         padded_attention_mask = []
         padded_labels = []
+        has_weights = "weights" in batch[0]
+        padded_weights = [] if has_weights else None
 
         for item in batch:
             input_ids = list(item["input_ids"])
@@ -91,12 +93,17 @@ class TriageDataCollator:
             padded_input_ids.append(input_ids + [self.pad_token_id] * pad_len)
             padded_attention_mask.append(attention_mask + [0] * pad_len)
             padded_labels.append(labels + [-100] * pad_len)
+            if has_weights and padded_weights is not None:
+                padded_weights.append(list(item["weights"]) + [0.0] * pad_len)
 
-        return {
+        out = {
             "input_ids": torch.tensor(padded_input_ids, dtype=torch.long),
             "attention_mask": torch.tensor(padded_attention_mask, dtype=torch.long),
             "labels": torch.tensor(padded_labels, dtype=torch.long),
         }
+        if has_weights and padded_weights is not None:
+            out["weights"] = torch.tensor(padded_weights, dtype=torch.float)
+        return out
 
 
 def prepare_dataset(
@@ -104,6 +111,7 @@ def prepare_dataset(
     tokenizer: Any,
     max_seq_length: int = 512,
     mask_prompt: bool = True,
+    field_weights: Optional[Dict[str, float]] = None,
 ) -> TriageDataset:
     """Read clean training data and format tokenized examples with completion masking.
 
@@ -175,21 +183,35 @@ def prepare_dataset(
 
             attention_mask = [1] * len(full_tokens)
 
-            records.append(
-                {
-                    "id": record_id,
-                    "input_ids": full_tokens,
-                    "attention_mask": attention_mask,
-                    "labels": labels,
-                }
-            )
+            record: Dict[str, Any] = {
+                "id": record_id,
+                "input_ids": full_tokens,
+                "attention_mask": attention_mask,
+                "labels": labels,
+            }
+
+            if field_weights is not None:
+                weights = [0.0] * prompt_len + [1.0] * (len(full_tokens) - prompt_len)
+                assistant_sub = assistant_msg.lower()
+                for field_name, mult in field_weights.items():
+                    if f'"{field_name}"' in assistant_sub:
+                        field_tokens = tokenizer.encode(f'"{field_name}"', add_special_tokens=False)
+                        if field_tokens:
+                            for i in range(prompt_len, len(full_tokens) - len(field_tokens) + 1):
+                                if full_tokens[i : i + len(field_tokens)] == field_tokens:
+                                    for j in range(i, min(i + len(field_tokens) + 10, len(full_tokens))):
+                                        weights[j] *= mult
+                record["weights"] = weights
+
+            records.append(record)
 
     logger.info(
-        "Prepared %d examples from %s (max_seq_length=%d, mask_prompt=%s)",
+        "Prepared %d examples from %s (max_seq_length=%d, mask_prompt=%s, field_weights=%s)",
         len(records),
         data_path,
         max_seq_length,
         mask_prompt,
+        bool(field_weights),
     )
     return TriageDataset(records)
 
@@ -326,6 +348,7 @@ def run_training(cfg: TrainConfig) -> Dict[str, Any]:
         tokenizer=tokenizer,
         max_seq_length=cfg.max_seq_length,
         mask_prompt=cfg.mask_prompt,
+        field_weights=cfg.field_weights,
     )
 
     # Model precision configuration

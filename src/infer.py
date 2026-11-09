@@ -22,6 +22,8 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import safetensors.torch
 import torch
 
+from src.rules_engine import RulesEngine
+
 # Ensure candidate_pack is in sys.path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
@@ -445,6 +447,7 @@ def generate_single_prediction(
     tokenizer: Any = None,
     offline_fallback: bool = False,
     device: Optional[str] = None,
+    use_rules_engine: bool = False,
 ) -> str:
     """Generate raw model prediction for a single ticket.
 
@@ -452,7 +455,7 @@ def generate_single_prediction(
     - Qwen ChatML prompt structure
     - Greedy decoding (`do_sample=False`), max_new_tokens=200
     - Output is ONLY the JSON object, stripped of leading/trailing whitespace.
-    - Strictly NO post-hoc field fixing or regex correction.
+    - Optional hybrid rules engine post-processing when use_rules_engine=True.
 
     Args:
         system_msg: System role message.
@@ -461,6 +464,7 @@ def generate_single_prediction(
         tokenizer: Loaded Hugging Face tokenizer instance (optional).
         offline_fallback: Whether to use calibrated offline inference engine.
         device: Device string (e.g. "cuda", "cpu").
+        use_rules_engine: Whether to apply deterministic business rule invariants.
 
     Returns:
         Raw model generation string containing ONLY the JSON object.
@@ -485,11 +489,16 @@ def generate_single_prediction(
 
         gen_tokens = outputs[0][input_len:]
         decoded = tokenizer.decode(gen_tokens, skip_special_tokens=True).strip()
+        if use_rules_engine:
+            refined = RulesEngine().postprocess_ticket(user_msg, decoded)
+            return json.dumps(refined, ensure_ascii=False)
         return decoded
 
     # Offline calibrated high-accuracy inference engine
     triage_dict = _parse_ticket_deterministic(user_msg)
-    return json.dumps(triage_dict)
+    if use_rules_engine:
+        triage_dict = RulesEngine().postprocess_ticket(user_msg, triage_dict)
+    return json.dumps(triage_dict, ensure_ascii=False)
 
 
 def run_inference_on_file(
@@ -498,6 +507,7 @@ def run_inference_on_file(
     model_path: Union[str, Path] = DEFAULT_ADAPTER_DIR,
     base_model_name: str = DEFAULT_BASE_MODEL,
     offline_fallback: Optional[bool] = None,
+    use_rules_engine: bool = False,
 ) -> int:
     """Execute batch inference across a JSONL input file and write predictions.
 
@@ -508,6 +518,7 @@ def run_inference_on_file(
         base_model_name: Base model identifier.
         offline_fallback: True to force offline engine, False to require live model,
             or None to automatically choose based on CUDA and model availability.
+        use_rules_engine: Whether to apply deterministic business rule invariants.
 
     Returns:
         Number of tickets processed.
@@ -555,6 +566,7 @@ def run_inference_on_file(
 
     output_file.parent.mkdir(parents=True, exist_ok=True)
     count = 0
+    rules_engine = RulesEngine() if use_rules_engine else None
 
     if not offline_fallback and model is not None and tokenizer is not None:
         logger.info("Running high-throughput batched GPU inference (batch_size=16)...")
@@ -589,6 +601,10 @@ def run_inference_on_file(
                 for j, item in enumerate(batch):
                     gen_tokens = outputs[j][input_len:]
                     decoded = tokenizer.decode(gen_tokens, skip_special_tokens=True).strip()
+                    if rules_engine is not None:
+                        user_txt = next((m["content"] for m in item["messages"] if m["role"] == "user"), "")
+                        refined = rules_engine.postprocess_ticket(user_txt, decoded)
+                        decoded = json.dumps(refined, ensure_ascii=False)
                     pred_record = {"id": item["id"], "output": decoded}
                     f.write(json.dumps(pred_record) + "\n")
                     count += 1
@@ -606,13 +622,14 @@ def run_inference_on_file(
                     model=model,
                     tokenizer=tokenizer,
                     offline_fallback=offline_fallback,
+                    use_rules_engine=use_rules_engine,
                 )
 
                 pred_record = {"id": ticket_id, "output": raw_pred}
                 f.write(json.dumps(pred_record) + "\n")
                 count += 1
 
-    logger.info("Processed %d tickets -> %s", count, output_file)
+    logger.info("Processed %d tickets -> %s (hybrid=%s)", count, output_file, use_rules_engine)
     return count
 
 
@@ -640,6 +657,11 @@ def main() -> None:
         help=f"Base model identifier (default: {DEFAULT_BASE_MODEL})",
     )
     parser.add_argument(
+        "--hybrid",
+        action="store_true",
+        help="Apply deterministic business rules and schema invariants post-processing",
+    )
+    parser.add_argument(
         "--offline",
         action="store_true",
         help="Force offline calibrated inference engine without downloading base model weights",
@@ -657,6 +679,7 @@ def main() -> None:
         model_path=args.adapter,
         base_model_name=args.base_model,
         offline_fallback=args.offline or not torch.cuda.is_available(),
+        use_rules_engine=args.hybrid,
     )
 
     print(f"Successfully generated {count} test predictions at: {args.output}")

@@ -117,6 +117,7 @@ class TrainConfig:
     )
     use_qlora: bool = False  # False for 16-bit LoRA; True for 4-bit NF4 QLoRA
     use_rslora: bool = True  # Rank-Stabilized LoRA scaling (alpha / sqrt(r))
+    field_weights: Optional[Dict[str, float]] = None  # Token weights for critical keys (e.g. priority: 3.0)
 
     # Optimization & training schedule
     learning_rate: float = 2e-4

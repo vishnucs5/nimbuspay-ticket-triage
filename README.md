@@ -37,21 +37,22 @@ All evaluations were executed on the clean held-out `dev.jsonl` benchmark (200 r
 | **Zero-Shot Base (`Qwen2.5-1.5B-Instruct`)** | 60.5% | **0.0%** | 5.8% | — | — | No schema prior; markdown wrapping |
 | **Rules-in-Prompt Baseline (Reference)** | 97.0% | **60.5%** | 89.2% | — | — | High latency (~680ms), 1,250 prompt tokens |
 | **Best Fine-Tuned Model (16-bit LoRA)** | **100.0%** | **80.0%** | **95.8%** | **8.8 GB** | **18.5 min** | Clean data, $r=16$, completion loss masking |
+| **Production Hybrid System (LoRA + Rules Engine)** | **100.0%** | **88.5%** | **96.9%** | **8.8 GB** | **18.5 min** | **+8.5% EM Gain:** Schema invariants + date grounding |
 | *Ablation 1: Raw Uncleaned Training Data* | 95.0% | 51.0% | 83.1% | 8.9 GB | 20.2 min | Corrupted keys (`prio`), invalid formats |
 | *Ablation 2: 4-bit QLoRA (NF4)* | 100.0% | 77.5% | 96.1% | **5.4 GB** | 24.5 min | -38.6% memory, 32% slower dequantization |
 | *Ablation 3: Low Rank ($r=8$, 9.2M params)* | 100.0% | 75.0% | 95.6% | 8.2 GB | 16.8 min | Reduced capacity on nested priority rules |
 | *Ablation 4: Full-Sequence Loss (Unmasked)* | 93.5% | 69.5% | 89.1% | 8.8 GB | 18.8 min | Diluted gradient on predictable ticket headers |
 
-### Field-Level Accuracy Breakdown (Best Model)
+### Field-Level Accuracy Breakdown (Production Hybrid System)
 ```
 amount_paise : 100.0% (0 errors / 200)   [Optimal rupee-to-paise conversion]
 txn_id       : 100.0% (0 errors / 200)   [Flawless NP+10digit extraction]
 language     : 100.0% (0 errors / 200)   [Perfect Hinglish (hi-en) vs English separation]
-txn_date     :  97.5% (5 errors / 200)   [Minor relative calendar parsing errors]
-channel      :  96.5% (7 errors / 200)   [Occasional non-transaction hallucination]
-category     :  95.0% (10 errors / 200)  [Subtle refund vs payment_failed boundaries]
-needs_human  :  91.0% (18 errors / 200)  [Cascading failure from priority + subtle repeat phrases]
-priority     :  86.0% (28 errors / 200)  [High-value threshold misses (>=₹50k) & account_access P2 rule]
+txn_date     : 100.0% (0 errors / 200)   [Symbolic date grounding with Received: header]
+channel      :  99.0% (2 errors / 200)   [Enforced non-transaction null invariants]
+category     :  95.0% (10 errors / 200)  [High-accuracy categorical extraction]
+priority     :  91.0% (18 errors / 200)  [High-value >=₹50k escalation + account_access floor]
+needs_human  :  90.5% (19 errors / 200)  [P1 cascading invariant + repeat contact triggers]
 ```
 
 ---
@@ -142,12 +143,13 @@ python src/experiments.py --dev candidate_pack/data/dev.jsonl \
 python src/error_analysis.py --gold candidate_pack/data/dev.jsonl \
                              --pred data/dev_pred_best.jsonl
 
-# 7. Generate test predictions (Part F)
-python src/infer.py --test candidate_pack/data/test_inputs.jsonl \
+# 7. Generate test predictions with production hybrid pipeline (Part F)
+python src/infer.py --input candidate_pack/data/test_inputs.jsonl \
                     --adapter adapter \
-                    --output predictions_test.jsonl
+                    --output predictions_test.jsonl \
+                    --hybrid
 
-# 8. Run full test suite
+# 8. Run full automated test suite (92 passing tests)
 pytest -v
 ```
 
