@@ -1,0 +1,991 @@
+{
+  "model": "Qwen/Qwen2.5-3B-Instruct (Best Experiment 2: QLoRA rank=16)",
+  "evaluation_dataset": "dev.jsonl (200 records)",
+  "overall": {
+    "total_tickets": 200,
+    "json_valid_count": 200,
+    "json_valid_rate": 1.0,
+    "exact_match_count": 160,
+    "exact_match_rate": 0.8,
+    "mean_field_acc": 0.9575,
+    "per_field_acc": {
+      "category": 0.95,
+      "priority": 0.86,
+      "amount_paise": 1.0,
+      "txn_date": 0.975,
+      "txn_id": 1.0,
+      "channel": 0.965,
+      "language": 1.0,
+      "needs_human": 0.91
+    },
+    "per_field_errors": {
+      "category": 10,
+      "priority": 28,
+      "amount_paise": 0,
+      "txn_date": 5,
+      "txn_id": 0,
+      "channel": 7,
+      "language": 0,
+      "needs_human": 18
+    },
+    "weakest_fields": [
+      {
+        "field": "priority",
+        "accuracy": 0.86,
+        "error_count": 28,
+        "error_rate": 0.14
+      },
+      {
+        "field": "needs_human",
+        "accuracy": 0.91,
+        "error_count": 18,
+        "error_rate": 0.08999999999999997
+      },
+      {
+        "field": "category",
+        "accuracy": 0.95,
+        "error_count": 10,
+        "error_rate": 0.050000000000000044
+      },
+      {
+        "field": "channel",
+        "accuracy": 0.965,
+        "error_count": 7,
+        "error_rate": 0.03500000000000003
+      },
+      {
+        "field": "txn_date",
+        "accuracy": 0.975,
+        "error_count": 5,
+        "error_rate": 0.025000000000000022
+      },
+      {
+        "field": "amount_paise",
+        "accuracy": 1.0,
+        "error_count": 0,
+        "error_rate": 0.0
+      },
+      {
+        "field": "txn_id",
+        "accuracy": 1.0,
+        "error_count": 0,
+        "error_rate": 0.0
+      },
+      {
+        "field": "language",
+        "accuracy": 1.0,
+        "error_count": 0,
+        "error_rate": 0.0
+      }
+    ]
+  },
+  "slices": {
+    "by_category": {
+      "refund": {
+        "slice_type": "category",
+        "name": "refund",
+        "n": 55,
+        "json_valid_rate": 1.0,
+        "exact_match_count": 37,
+        "exact_match_rate": 0.6727272727272727,
+        "mean_field_acc": 0.9340909090909091,
+        "per_field_acc": {
+          "category": 0.9636363636363636,
+          "priority": 0.8,
+          "amount_paise": 1.0,
+          "txn_date": 0.9636363636363636,
+          "txn_id": 1.0,
+          "channel": 0.9090909090909091,
+          "language": 1.0,
+          "needs_human": 0.8363636363636363
+        }
+      },
+      "payment_failed": {
+        "slice_type": "category",
+        "name": "payment_failed",
+        "n": 53,
+        "json_valid_rate": 1.0,
+        "exact_match_count": 46,
+        "exact_match_rate": 0.8679245283018868,
+        "mean_field_acc": 0.9716981132075473,
+        "per_field_acc": {
+          "category": 0.9622641509433962,
+          "priority": 0.9056603773584906,
+          "amount_paise": 1.0,
+          "txn_date": 0.9622641509433962,
+          "txn_id": 1.0,
+          "channel": 1.0,
+          "language": 1.0,
+          "needs_human": 0.9433962264150944
+        }
+      },
+      "kyc": {
+        "slice_type": "category",
+        "name": "kyc",
+        "n": 24,
+        "json_valid_rate": 1.0,
+        "exact_match_count": 20,
+        "exact_match_rate": 0.8333333333333334,
+        "mean_field_acc": 0.9635416666666666,
+        "per_field_acc": {
+          "category": 1.0,
+          "priority": 0.875,
+          "amount_paise": 1.0,
+          "txn_date": 1.0,
+          "txn_id": 1.0,
+          "channel": 0.9583333333333334,
+          "language": 1.0,
+          "needs_human": 0.875
+        }
+      },
+      "account_access": {
+        "slice_type": "category",
+        "name": "account_access",
+        "n": 19,
+        "json_valid_rate": 1.0,
+        "exact_match_count": 13,
+        "exact_match_rate": 0.6842105263157895,
+        "mean_field_acc": 0.9210526315789473,
+        "per_field_acc": {
+          "category": 0.8421052631578947,
+          "priority": 0.6842105263157895,
+          "amount_paise": 1.0,
+          "txn_date": 1.0,
+          "txn_id": 1.0,
+          "channel": 1.0,
+          "language": 1.0,
+          "needs_human": 0.8421052631578947
+        }
+      },
+      "offers": {
+        "slice_type": "category",
+        "name": "offers",
+        "n": 18,
+        "json_valid_rate": 1.0,
+        "exact_match_count": 16,
+        "exact_match_rate": 0.8888888888888888,
+        "mean_field_acc": 0.9722222222222222,
+        "per_field_acc": {
+          "category": 0.8888888888888888,
+          "priority": 0.8888888888888888,
+          "amount_paise": 1.0,
+          "txn_date": 1.0,
+          "txn_id": 1.0,
+          "channel": 1.0,
+          "language": 1.0,
+          "needs_human": 1.0
+        }
+      },
+      "other": {
+        "slice_type": "category",
+        "name": "other",
+        "n": 16,
+        "json_valid_rate": 1.0,
+        "exact_match_count": 14,
+        "exact_match_rate": 0.875,
+        "mean_field_acc": 0.9765625,
+        "per_field_acc": {
+          "category": 0.9375,
+          "priority": 0.9375,
+          "amount_paise": 1.0,
+          "txn_date": 1.0,
+          "txn_id": 1.0,
+          "channel": 0.9375,
+          "language": 1.0,
+          "needs_human": 1.0
+        }
+      },
+      "fraud": {
+        "slice_type": "category",
+        "name": "fraud",
+        "n": 15,
+        "json_valid_rate": 1.0,
+        "exact_match_count": 14,
+        "exact_match_rate": 0.9333333333333333,
+        "mean_field_acc": 0.9916666666666667,
+        "per_field_acc": {
+          "category": 1.0,
+          "priority": 1.0,
+          "amount_paise": 1.0,
+          "txn_date": 0.9333333333333333,
+          "txn_id": 1.0,
+          "channel": 1.0,
+          "language": 1.0,
+          "needs_human": 1.0
+        }
+      }
+    },
+    "by_source": {
+      "app-chat": {
+        "slice_type": "source",
+        "name": "app-chat",
+        "n": 86,
+        "json_valid_rate": 1.0,
+        "exact_match_count": 69,
+        "exact_match_rate": 0.8023255813953488,
+        "mean_field_acc": 0.9607558139534883,
+        "per_field_acc": {
+          "category": 0.9651162790697675,
+          "priority": 0.8837209302325582,
+          "amount_paise": 1.0,
+          "txn_date": 0.9651162790697675,
+          "txn_id": 1.0,
+          "channel": 0.9534883720930233,
+          "language": 1.0,
+          "needs_human": 0.9186046511627907
+        }
+      },
+      "email": {
+        "slice_type": "source",
+        "name": "email",
+        "n": 44,
+        "json_valid_rate": 1.0,
+        "exact_match_count": 37,
+        "exact_match_rate": 0.8409090909090909,
+        "mean_field_acc": 0.9659090909090909,
+        "per_field_acc": {
+          "category": 0.9772727272727273,
+          "priority": 0.8863636363636364,
+          "amount_paise": 1.0,
+          "txn_date": 0.9772727272727273,
+          "txn_id": 1.0,
+          "channel": 0.9772727272727273,
+          "language": 1.0,
+          "needs_human": 0.9090909090909091
+        }
+      },
+      "twitter": {
+        "slice_type": "source",
+        "name": "twitter",
+        "n": 40,
+        "json_valid_rate": 1.0,
+        "exact_match_count": 31,
+        "exact_match_rate": 0.775,
+        "mean_field_acc": 0.95,
+        "per_field_acc": {
+          "category": 0.9,
+          "priority": 0.825,
+          "amount_paise": 1.0,
+          "txn_date": 0.975,
+          "txn_id": 1.0,
+          "channel": 0.975,
+          "language": 1.0,
+          "needs_human": 0.925
+        }
+      },
+      "ivr-transcript": {
+        "slice_type": "source",
+        "name": "ivr-transcript",
+        "n": 30,
+        "json_valid_rate": 1.0,
+        "exact_match_count": 23,
+        "exact_match_rate": 0.7666666666666667,
+        "mean_field_acc": 0.9458333333333333,
+        "per_field_acc": {
+          "category": 0.9333333333333333,
+          "priority": 0.8,
+          "amount_paise": 1.0,
+          "txn_date": 1.0,
+          "txn_id": 1.0,
+          "channel": 0.9666666666666667,
+          "language": 1.0,
+          "needs_human": 0.8666666666666667
+        }
+      }
+    },
+    "by_language": {
+      "en": {
+        "slice_type": "language",
+        "name": "en",
+        "n": 151,
+        "json_valid_rate": 1.0,
+        "exact_match_count": 123,
+        "exact_match_rate": 0.8145695364238411,
+        "mean_field_acc": 0.9594370860927152,
+        "per_field_acc": {
+          "category": 0.9470198675496688,
+          "priority": 0.8609271523178808,
+          "amount_paise": 1.0,
+          "txn_date": 0.9735099337748344,
+          "txn_id": 1.0,
+          "channel": 0.9801324503311258,
+          "language": 1.0,
+          "needs_human": 0.9139072847682119
+        }
+      },
+      "hi-en": {
+        "slice_type": "language",
+        "name": "hi-en",
+        "n": 49,
+        "json_valid_rate": 1.0,
+        "exact_match_count": 37,
+        "exact_match_rate": 0.7551020408163265,
+        "mean_field_acc": 0.951530612244898,
+        "per_field_acc": {
+          "category": 0.9591836734693877,
+          "priority": 0.8571428571428571,
+          "amount_paise": 1.0,
+          "txn_date": 0.9795918367346939,
+          "txn_id": 1.0,
+          "channel": 0.9183673469387755,
+          "language": 1.0,
+          "needs_human": 0.8979591836734694
+        }
+      }
+    }
+  },
+  "weakest_fields_summary": [
+    {
+      "field": "priority",
+      "accuracy": 0.86,
+      "errors": 28,
+      "primary_failure_mode": "High-value threshold misses (>=\u20b950k) and account_access P2 default misses"
+    },
+    {
+      "field": "needs_human",
+      "accuracy": 0.91,
+      "errors": 18,
+      "primary_failure_mode": "Missing multi-contact cues ('again and again', 'teesri baar') and long email context dilution"
+    },
+    {
+      "field": "category",
+      "accuracy": 0.95,
+      "errors": 10,
+      "primary_failure_mode": "Top-up failure vs refund confusion and offers vs failure misclassification"
+    },
+    {
+      "field": "channel",
+      "accuracy": 0.965,
+      "errors": 7,
+      "primary_failure_mode": "Extraneous hallucination on non-tx categories and missing explicit mode tags"
+    },
+    {
+      "field": "txn_date",
+      "accuracy": 0.975,
+      "errors": 5,
+      "primary_failure_mode": "Fallback to '2026-01-01' on relative or non-ISO date formats"
+    },
+    {
+      "field": "amount_paise",
+      "accuracy": 1.0,
+      "errors": 0,
+      "primary_failure_mode": "Near-flawless performance (100% accuracy)"
+    },
+    {
+      "field": "txn_id",
+      "accuracy": 1.0,
+      "errors": 0,
+      "primary_failure_mode": "Near-flawless performance (100% accuracy)"
+    },
+    {
+      "field": "language",
+      "accuracy": 1.0,
+      "errors": 0,
+      "primary_failure_mode": "Near-flawless performance (100% accuracy)"
+    }
+  ],
+  "failure_case_studies": [
+    {
+      "id": "dv-00167",
+      "category": "refund",
+      "source": "ivr-transcript",
+      "language": "en",
+      "received_date": "2026-07-02",
+      "ticket_text": "Received: 2026-07-02 (Thu)\nSource: ivr-transcript\n\n[IVR transcript] Hi, Are refunds allowed for certain items. Mode: wallet. My phone is a Vivo Y56. Date of transaction: 2nd July 2026. The txn id is NP 1337019356. It was for \u20b92,94,830. Please help.",
+      "gold": {
+        "category": "refund",
+        "priority": "P1",
+        "amount_paise": 29483000,
+        "txn_date": "2026-07-02",
+        "txn_id": "NP1337019356",
+        "channel": "wallet",
+        "language": "en",
+        "needs_human": true
+      },
+      "pred": {
+        "category": "refund",
+        "priority": "P2",
+        "amount_paise": 29483000,
+        "txn_date": "2026-07-02",
+        "txn_id": "NP1337019356",
+        "channel": "wallet",
+        "language": "en",
+        "needs_human": false
+      },
+      "raw_pred": "{\"category\": \"refund\", \"priority\": \"P2\", \"amount_paise\": 29483000, \"txn_date\": \"2026-07-02\", \"txn_id\": \"NP1337019356\", \"channel\": \"wallet\", \"language\": \"en\", \"needs_human\": false}",
+      "mismatched_fields": [
+        "priority",
+        "needs_human"
+      ],
+      "diffs": {
+        "priority": {
+          "gold": "P1",
+          "pred": "P2"
+        },
+        "needs_human": {
+          "gold": true,
+          "pred": false
+        }
+      },
+      "root_cause_category": "HIGH_VALUE_THRESHOLD_P1_ESCALATION_MISS",
+      "explanation": "Disputed amount is \u20b9294,830.00 (>= \u20b950,000 threshold for P1). Model assigned 'P2' instead of 'P1'. Per rule 1, priority P1 automatically mandates needs_human=True, causing a dual-field mismatch."
+    },
+    {
+      "id": "dv-00162",
+      "category": "account_access",
+      "source": "twitter",
+      "language": "en",
+      "received_date": "2026-06-01",
+      "ticket_text": "Received: 2026-06-01 (Mon)\nSource: twitter\n\n@NimbusPayCare What do I do if I have forgotten my passcode? Bank ref no 297451993856. App version is 6.8.10.",
+      "gold": {
+        "category": "account_access",
+        "priority": "P2",
+        "amount_paise": null,
+        "txn_date": null,
+        "txn_id": null,
+        "channel": null,
+        "language": "en",
+        "needs_human": false
+      },
+      "pred": {
+        "category": "account_access",
+        "priority": "P3",
+        "amount_paise": null,
+        "txn_date": null,
+        "txn_id": null,
+        "channel": null,
+        "language": "en",
+        "needs_human": true
+      },
+      "raw_pred": "{\"category\": \"account_access\", \"priority\": \"P3\", \"amount_paise\": null, \"txn_date\": null, \"txn_id\": null, \"channel\": null, \"language\": \"en\", \"needs_human\": true}",
+      "mismatched_fields": [
+        "priority",
+        "needs_human"
+      ],
+      "diffs": {
+        "priority": {
+          "gold": "P2",
+          "pred": "P3"
+        },
+        "needs_human": {
+          "gold": false,
+          "pred": true
+        }
+      },
+      "root_cause_category": "ACCOUNT_ACCESS_STRUCTURAL_P2_RULE_MISS",
+      "explanation": "SCHEMA priority rule 2 specifies that if not P1, category 'account_access' must be P2. The model assigned P3, failing to memorize the category-level priority floor."
+    },
+    {
+      "id": "dv-00164",
+      "category": "account_access",
+      "source": "email",
+      "language": "en",
+      "received_date": "2026-07-20",
+      "ticket_text": "Received: 2026-07-20 (Mon)\nSource: email\n\nSubject: Need support\n\nHi team,\nWhere can I get my PIN unblocked? I keep raising this again and again. Using the Android app. Please look into it.\n\nRegards,\nArjun Das\n\n> On 12 Jul 2026, NimbusPay Support wrote:\n> Thank you for contacting NimbusPay. Your request has been registered with ticket #23715. Our team will get back to you within 48 working hours. Please do not share your OTP, PIN or card details with anyone, including people who claim to be from NimbusPay. You can track the status of your request from the Help section of the app. If you have already received a resolution, please ignore this message. We value your trust and thank you for your patience while we look into this for you.\n\n> On 20 Jun 2026, NimbusPay Support wrote:\n> Thank you for contacting NimbusPay. Your request has been registered with ticket #99690. Our team will get back to you within 48 working hours. Please do not share your OTP, PIN or card details with anyone, including people who claim to be from NimbusPay. You can track the status of your request from the Help section of the app. If you have already received a resolution, please ignore this message. We value your trust and thank you for your patience while we look into this for you.\n\n> On 18 Jul 2026, NimbusPay Support wrote:\n> Thank you for contacting NimbusPay. Your request has been registered with ticket #90498. Our team will get back to you within 48 working hours. Please do not share your OTP, PIN or card details with anyone, including people who claim to be from NimbusPay. You can track the status of your request from the Help section of the app. If you have already received a resolution, please ignore this message. We value your trust and thank you for your patience while we look into this for you.\n\n> On 09 Jul 2026, NimbusPay Support wrote:\n> Thank you for contacting NimbusPay. Your request has been registered with ticket #65765. Our team will get back to you within 48 working hours. Please do not share your OTP, PIN or card details with anyone, including people who claim to be from NimbusPay. You can track the status of your request from the Help section of the app. If you have already received a resolution, please ignore this message. We value your trust and thank you for your patience while we look into this for you.\n\n> On 24 Jun 2026, NimbusPay Support wrote:\n> Thank you for contacting NimbusPay. Your request has been registered with ticket #21525. Our team will get back to you within 48 working hours. Please do not share your OTP, PIN or card details with anyone, including people who claim to be from NimbusPay. You can track the status of your request from the Help section of the app. If you have already received a resolution, please ignore this message. We value your trust and thank you for your patience while we look into this for you.\n\n> On 01 Jul 2026, NimbusPay Support wrote:\n> Thank you for contacting NimbusPay. Your request has been registered with ticket #49962. Our team will get back to you within 48 working hours. Please do not share your OTP, PIN or card details with anyone, including people who claim to be from NimbusPay. You can track the status of your request from the Help section of the app. If you have already received a resolution, please ignore this message. We value your trust and thank you for your patience while we look into this for you.\n\n> On 29 Jun 2026, NimbusPay Support wrote:\n> Thank you for contacting NimbusPay. Your request has been registered with ticket #62931. Our team will get back to you within 48 working hours. Please do not share your OTP, PIN or card details with anyone, including people who claim to be from NimbusPay. You can track the status of your request from the Help section of the app. If you have already received a resolution, please ignore this message. We value your trust and thank you for your patience while we look into this for you.\n\n> On 30 Jun 2026, NimbusPay Support wrote:\n> Thank you for contacting NimbusPay. Your request has been registered with ticket #94442. Our team will get back to you within 48 working hours. Please do not share your OTP, PIN or card details with anyone, including people who claim to be from NimbusPay. You can track the status of your request from the Help section of the app. If you have already received a resolution, please ignore this message. We value your trust and thank you for your patience while we look into this for you.\n\n> On 27 Jun 2026, NimbusPay Support wrote:\n> Thank you for contacting NimbusPay. Your request has been registered with ticket #40612. Our team will get back to you within 48 working hours. Please do not share your OTP, PIN or card details with anyone, including people who claim to be from NimbusPay. You can track the status of your request from the Help section of the app. If you have already received a resolution, please ignore this message. We value your trust and thank you for your patience while we look into this for you.\n\n> On 03 Jul 2026, NimbusPay Support wrote:\n> Thank you for contacting NimbusPay. Your request has been registered with ticket #48199. Our team will get back to you within 48 working hours. Please do not share your OTP, PIN or card details with anyone, including people who claim to be from NimbusPay. You can track the status of your request from the Help section of the app. If you have already received a resolution, please ignore this message. We value your trust and thank you for your patience while we look into this for you.\n\n> On 07 Jul 2026, NimbusPay Support wrote:\n> Thank you for contacting NimbusPay. Your request has been registered with ticket #59380. Our team will get back to you within 48 working hours. Please do not share your OTP, PIN or card details with anyone, including people who claim to be from NimbusPay. You can track the status of your request from the Help section of the app. If you have already received a resolution, please ignore this message. We value your trust and thank you for your patience while we look into this for you.",
+      "gold": {
+        "category": "account_access",
+        "priority": "P2",
+        "amount_paise": null,
+        "txn_date": null,
+        "txn_id": null,
+        "channel": null,
+        "language": "en",
+        "needs_human": true
+      },
+      "pred": {
+        "category": "account_access",
+        "priority": "P3",
+        "amount_paise": null,
+        "txn_date": null,
+        "txn_id": null,
+        "channel": null,
+        "language": "en",
+        "needs_human": false
+      },
+      "raw_pred": "{\"category\": \"account_access\", \"priority\": \"P3\", \"amount_paise\": null, \"txn_date\": null, \"txn_id\": null, \"channel\": null, \"language\": \"en\", \"needs_human\": false}",
+      "mismatched_fields": [
+        "priority",
+        "needs_human"
+      ],
+      "diffs": {
+        "priority": {
+          "gold": "P2",
+          "pred": "P3"
+        },
+        "needs_human": {
+          "gold": true,
+          "pred": false
+        }
+      },
+      "root_cause_category": "ACCOUNT_ACCESS_STRUCTURAL_P2_RULE_MISS",
+      "explanation": "SCHEMA priority rule 2 specifies that if not P1, category 'account_access' must be P2. The model assigned P3, failing to memorize the category-level priority floor."
+    },
+    {
+      "id": "dv-00171",
+      "category": "payment_failed",
+      "source": "email",
+      "language": "hi-en",
+      "received_date": "2026-06-02",
+      "ticket_text": "Received: 2026-06-02 (Tue)\nSource: email\n\nSubject: Need support\n\nHello ji,\nTransaction decline ho gaya phir bhi bank se paisa chala gaya. Yeh 24-05-26 ko hua. INR 1,88,242 kat gaye.\n\nRegards,\nAnanya Bose",
+      "gold": {
+        "category": "payment_failed",
+        "priority": "P1",
+        "amount_paise": 18824200,
+        "txn_date": "2026-05-24",
+        "txn_id": null,
+        "channel": null,
+        "language": "hi-en",
+        "needs_human": true
+      },
+      "pred": {
+        "category": "payment_failed",
+        "priority": "P2",
+        "amount_paise": 18824200,
+        "txn_date": "2026-05-24",
+        "txn_id": null,
+        "channel": null,
+        "language": "hi-en",
+        "needs_human": false
+      },
+      "raw_pred": "{\"category\": \"payment_failed\", \"priority\": \"P2\", \"amount_paise\": 18824200, \"txn_date\": \"2026-05-24\", \"txn_id\": null, \"channel\": null, \"language\": \"hi-en\", \"needs_human\": false}",
+      "mismatched_fields": [
+        "priority",
+        "needs_human"
+      ],
+      "diffs": {
+        "priority": {
+          "gold": "P1",
+          "pred": "P2"
+        },
+        "needs_human": {
+          "gold": true,
+          "pred": false
+        }
+      },
+      "root_cause_category": "HIGH_VALUE_THRESHOLD_P1_ESCALATION_MISS",
+      "explanation": "Disputed amount is \u20b9188,242.00 (>= \u20b950,000 threshold for P1). Model assigned 'P2' instead of 'P1'. Per rule 1, priority P1 automatically mandates needs_human=True, causing a dual-field mismatch."
+    },
+    {
+      "id": "dv-00173",
+      "category": "refund",
+      "source": "app-chat",
+      "language": "hi-en",
+      "received_date": "2026-08-08",
+      "ticket_text": "Received: 2026-08-08 (Sat)\nSource: app-chat\n\nRefund initiate dikha raha hai kai dino se par aaya kuch nahi. Teesri baar bol raha hoon. Android app use kar raha hoon. Wallet se hua tha. Rakam Rs 2,40,685.25 hai.",
+      "gold": {
+        "category": "refund",
+        "priority": "P1",
+        "amount_paise": 24068525,
+        "txn_date": null,
+        "txn_id": null,
+        "channel": "wallet",
+        "language": "hi-en",
+        "needs_human": true
+      },
+      "pred": {
+        "category": "refund",
+        "priority": "P2",
+        "amount_paise": 24068525,
+        "txn_date": null,
+        "txn_id": null,
+        "channel": "wallet",
+        "language": "hi-en",
+        "needs_human": false
+      },
+      "raw_pred": "{\"category\": \"refund\", \"priority\": \"P2\", \"amount_paise\": 24068525, \"txn_date\": null, \"txn_id\": null, \"channel\": \"wallet\", \"language\": \"hi-en\", \"needs_human\": false}",
+      "mismatched_fields": [
+        "priority",
+        "needs_human"
+      ],
+      "diffs": {
+        "priority": {
+          "gold": "P1",
+          "pred": "P2"
+        },
+        "needs_human": {
+          "gold": true,
+          "pred": false
+        }
+      },
+      "root_cause_category": "HIGH_VALUE_THRESHOLD_P1_ESCALATION_MISS",
+      "explanation": "Disputed amount is \u20b9240,685.25 (>= \u20b950,000 threshold for P1). Model assigned 'P2' instead of 'P1'. Per rule 1, priority P1 automatically mandates needs_human=True, causing a dual-field mismatch."
+    },
+    {
+      "id": "dv-00179",
+      "category": "refund",
+      "source": "email",
+      "language": "en",
+      "received_date": "2026-06-12",
+      "ticket_text": "Received: 2026-06-12 (Fri)\nSource: email\n\nSubject: Problem with NimbusPay\n\nDear NimbusPay support,\nGive me a refund. Mode: wallet. It is Rs 6,627.75 in total. ID: NP 2300785999 Using the Android app. Please look into it.\n\nRegards,\nPooja Nair",
+      "gold": {
+        "category": "refund",
+        "priority": "P2",
+        "amount_paise": 662775,
+        "txn_date": null,
+        "txn_id": "NP2300785999",
+        "channel": "wallet",
+        "language": "en",
+        "needs_human": false
+      },
+      "pred": {
+        "category": "refund",
+        "priority": "P2",
+        "amount_paise": 662775,
+        "txn_date": null,
+        "txn_id": "NP2300785999",
+        "channel": null,
+        "language": "en",
+        "needs_human": false
+      },
+      "raw_pred": "{\"category\": \"refund\", \"priority\": \"P2\", \"amount_paise\": 662775, \"txn_date\": null, \"txn_id\": \"NP2300785999\", \"channel\": null, \"language\": \"en\", \"needs_human\": false}",
+      "mismatched_fields": [
+        "channel"
+      ],
+      "diffs": {
+        "channel": {
+          "gold": "wallet",
+          "pred": null
+        }
+      },
+      "root_cause_category": "EXPLICIT_PAYMENT_CHANNEL_EXTRACTION_MISS",
+      "explanation": "Customer explicitly specified payment channel 'wallet' (e.g. 'Mode: wallet'), but the model failed to extract it and returned null."
+    },
+    {
+      "id": "dv-00181",
+      "category": "fraud",
+      "source": "app-chat",
+      "language": "en",
+      "received_date": "2026-07-16",
+      "ticket_text": "Received: 2026-07-16 (Thu)\nSource: app-chat\n\nHello, How do I freeze my bank card, as there has been a strange withdrawal? My phone is a Pixel 7a. It is Rs. 34475 in total. Transaction date Jul 15. Waiting for your reply.",
+      "gold": {
+        "category": "fraud",
+        "priority": "P1",
+        "amount_paise": 3447500,
+        "txn_date": "2026-07-15",
+        "txn_id": null,
+        "channel": "card",
+        "language": "en",
+        "needs_human": true
+      },
+      "pred": {
+        "category": "fraud",
+        "priority": "P1",
+        "amount_paise": 3447500,
+        "txn_date": "2026-01-01",
+        "txn_id": null,
+        "channel": "card",
+        "language": "en",
+        "needs_human": true
+      },
+      "raw_pred": "{\"category\": \"fraud\", \"priority\": \"P1\", \"amount_paise\": 3447500, \"txn_date\": \"2026-01-01\", \"txn_id\": null, \"channel\": \"card\", \"language\": \"en\", \"needs_human\": true}",
+      "mismatched_fields": [
+        "txn_date"
+      ],
+      "diffs": {
+        "txn_date": {
+          "gold": "2026-07-15",
+          "pred": "2026-01-01"
+        }
+      },
+      "root_cause_category": "RELATIVE_OR_PARTIAL_DATE_DEFAULT_FALLBACK",
+      "explanation": "Date parsing failed; model emitted hardcoded default fallback '2026-01-01' instead of resolving '2026-07-15'. This occurred when relative dates ('yesterday', '3 days ago'), non-ISO formats (DD/MM/YYYY), or dates without year needed to be resolved against the Received header date."
+    },
+    {
+      "id": "dv-00183",
+      "category": "kyc",
+      "source": "app-chat",
+      "language": "hi-en",
+      "received_date": "2026-09-08",
+      "ticket_text": "Received: 2026-09-08 (Tue)\nSource: app-chat\n\nHi, Video KYC atka hua hai, ktina time lagega?",
+      "gold": {
+        "category": "kyc",
+        "priority": "P3",
+        "amount_paise": null,
+        "txn_date": null,
+        "txn_id": null,
+        "channel": null,
+        "language": "hi-en",
+        "needs_human": false
+      },
+      "pred": {
+        "category": "kyc",
+        "priority": "P3",
+        "amount_paise": null,
+        "txn_date": null,
+        "txn_id": null,
+        "channel": "upi",
+        "language": "hi-en",
+        "needs_human": false
+      },
+      "raw_pred": "{\"category\": \"kyc\", \"priority\": \"P3\", \"amount_paise\": null, \"txn_date\": null, \"txn_id\": null, \"channel\": \"upi\", \"language\": \"hi-en\", \"needs_human\": false}",
+      "mismatched_fields": [
+        "channel"
+      ],
+      "diffs": {
+        "channel": {
+          "gold": null,
+          "pred": "upi"
+        }
+      },
+      "root_cause_category": "SCHEMA_CONSTRAINT_VIOLATION_EXTRANEOUS_CHANNEL",
+      "explanation": "SCHEMA rule violation: for category 'kyc', transaction fields including channel must strictly be null. The model hallucinated channel='upi' on a non-transactional support ticket."
+    },
+    {
+      "id": "dv-00185",
+      "category": "refund",
+      "source": "app-chat",
+      "language": "en",
+      "received_date": "2026-07-07",
+      "ticket_text": "Received: 2026-07-07 (Tue)\nSource: app-chat\n\nURGENT!! Hi, I checked my transactions and saw that I was charged twice during a restaurant visit. I would like to get my money back. My phone is a Redmi Note 12. Mode: UPI. Dated 27/06/2026. The transaction amount is Rs 28,904.50. Ref: np 11051 61461 Please help.",
+      "gold": {
+        "category": "refund",
+        "priority": "P2",
+        "amount_paise": 2890450,
+        "txn_date": "2026-06-27",
+        "txn_id": "NP1105161461",
+        "channel": "upi",
+        "language": "en",
+        "needs_human": false
+      },
+      "pred": {
+        "category": "refund",
+        "priority": "P2",
+        "amount_paise": 2890450,
+        "txn_date": "2026-01-01",
+        "txn_id": "NP1105161461",
+        "channel": "upi",
+        "language": "en",
+        "needs_human": false
+      },
+      "raw_pred": "{\"category\": \"refund\", \"priority\": \"P2\", \"amount_paise\": 2890450, \"txn_date\": \"2026-01-01\", \"txn_id\": \"NP1105161461\", \"channel\": \"upi\", \"language\": \"en\", \"needs_human\": false}",
+      "mismatched_fields": [
+        "txn_date"
+      ],
+      "diffs": {
+        "txn_date": {
+          "gold": "2026-06-27",
+          "pred": "2026-01-01"
+        }
+      },
+      "root_cause_category": "RELATIVE_OR_PARTIAL_DATE_DEFAULT_FALLBACK",
+      "explanation": "Date parsing failed; model emitted hardcoded default fallback '2026-01-01' instead of resolving '2026-06-27'. This occurred when relative dates ('yesterday', '3 days ago'), non-ISO formats (DD/MM/YYYY), or dates without year needed to be resolved against the Received header date."
+    },
+    {
+      "id": "dv-00186",
+      "category": "other",
+      "source": "twitter",
+      "language": "en",
+      "received_date": "2026-09-04",
+      "ticket_text": "Received: 2026-09-04 (Fri)\nSource: twitter\n\n@NimbusPayCare can you express my card to me? Using the Android app.",
+      "gold": {
+        "category": "other",
+        "priority": "P3",
+        "amount_paise": null,
+        "txn_date": null,
+        "txn_id": null,
+        "channel": null,
+        "language": "en",
+        "needs_human": false
+      },
+      "pred": {
+        "category": "other",
+        "priority": "P3",
+        "amount_paise": null,
+        "txn_date": null,
+        "txn_id": null,
+        "channel": "upi",
+        "language": "en",
+        "needs_human": false
+      },
+      "raw_pred": "{\"category\": \"other\", \"priority\": \"P3\", \"amount_paise\": null, \"txn_date\": null, \"txn_id\": null, \"channel\": \"upi\", \"language\": \"en\", \"needs_human\": false}",
+      "mismatched_fields": [
+        "channel"
+      ],
+      "diffs": {
+        "channel": {
+          "gold": null,
+          "pred": "upi"
+        }
+      },
+      "root_cause_category": "SCHEMA_CONSTRAINT_VIOLATION_EXTRANEOUS_CHANNEL",
+      "explanation": "SCHEMA rule violation: for category 'other', transaction fields including channel must strictly be null. The model hallucinated channel='upi' on a non-transactional support ticket."
+    },
+    {
+      "id": "dv-00191",
+      "category": "payment_failed",
+      "source": "twitter",
+      "language": "en",
+      "received_date": "2026-06-10",
+      "ticket_text": "Received: 2026-06-10 (Wed)\nSource: twitter\n\n@NimbusPayCare Hi, I am experiencing problems while trying to top-up with my card. I have never experienced any problems doing this before. Could you please help me? Transaction reference np 98818 79314. It took place on 24-05-26. My earlier ticket number is #45295. It is 2.4 lakh in total.",
+      "gold": {
+        "category": "payment_failed",
+        "priority": "P1",
+        "amount_paise": 24000000,
+        "txn_date": "2026-05-24",
+        "txn_id": "NP9881879314",
+        "channel": "card",
+        "language": "en",
+        "needs_human": true
+      },
+      "pred": {
+        "category": "refund",
+        "priority": "P2",
+        "amount_paise": 24000000,
+        "txn_date": "2026-05-24",
+        "txn_id": "NP9881879314",
+        "channel": "card",
+        "language": "en",
+        "needs_human": true
+      },
+      "raw_pred": "{\"category\": \"refund\", \"priority\": \"P2\", \"amount_paise\": 24000000, \"txn_date\": \"2026-05-24\", \"txn_id\": \"NP9881879314\", \"channel\": \"card\", \"language\": \"en\", \"needs_human\": true}",
+      "mismatched_fields": [
+        "category",
+        "priority"
+      ],
+      "diffs": {
+        "category": {
+          "gold": "payment_failed",
+          "pred": "refund"
+        },
+        "priority": {
+          "gold": "P1",
+          "pred": "P2"
+        }
+      },
+      "root_cause_category": "TRANSACTION_DISPUTE_DIRECTIONALITY_CONFUSION",
+      "explanation": "Ambiguity between debit top-up failure and refund request. Customer described a payment or wallet top-up failure, but model predicted 'refund'. The distinction between a payment failing to clear versus money owed back requires semantic directionality of funds."
+    },
+    {
+      "id": "dv-00192",
+      "category": "offers",
+      "source": "email",
+      "language": "en",
+      "received_date": "2026-09-19",
+      "ticket_text": "Received: 2026-09-19 (Sat)\nSource: email\n\nSubject: Help needed\n\nDear NimbusPay support,\nI did not get the cashback that was promised on the offer. App version is 5.8.5. It is Rs. 423 in total. Kindly resolve this asap.\n\nRegards,\nAnanya Bose",
+      "gold": {
+        "category": "offers",
+        "priority": "P3",
+        "amount_paise": 42300,
+        "txn_date": null,
+        "txn_id": null,
+        "channel": null,
+        "language": "en",
+        "needs_human": false
+      },
+      "pred": {
+        "category": "payment_failed",
+        "priority": "P1",
+        "amount_paise": 42300,
+        "txn_date": null,
+        "txn_id": null,
+        "channel": null,
+        "language": "en",
+        "needs_human": false
+      },
+      "raw_pred": "{\"category\": \"payment_failed\", \"priority\": \"P1\", \"amount_paise\": 42300, \"txn_date\": null, \"txn_id\": null, \"channel\": null, \"language\": \"en\", \"needs_human\": false}",
+      "mismatched_fields": [
+        "category",
+        "priority"
+      ],
+      "diffs": {
+        "category": {
+          "gold": "offers",
+          "pred": "payment_failed"
+        },
+        "priority": {
+          "gold": "P3",
+          "pred": "P1"
+        }
+      },
+      "root_cause_category": "PROMO_CASHBACK_DISPUTE_CONFUSION",
+      "explanation": "Customer inquired about missing promotional cashback or reward points. SCHEMA requires 'offers' for cashbacks, promo codes, and referral bonuses. The model mistook the absence of funds for a failed transaction ('payment_failed'), cascading into priority misclassification."
+    },
+    {
+      "id": "dv-00197",
+      "category": "account_access",
+      "source": "app-chat",
+      "language": "en",
+      "received_date": "2026-07-09",
+      "ticket_text": "Received: 2026-07-09 (Thu)\nSource: app-chat\n\nDear NimbusPay support, How do I unblock my pin after entering it wrong too many times? App version is 4.9.1. Kindly resolve this asap.",
+      "gold": {
+        "category": "account_access",
+        "priority": "P2",
+        "amount_paise": null,
+        "txn_date": null,
+        "txn_id": null,
+        "channel": null,
+        "language": "en",
+        "needs_human": false
+      },
+      "pred": {
+        "category": "payment_failed",
+        "priority": "P1",
+        "amount_paise": null,
+        "txn_date": null,
+        "txn_id": null,
+        "channel": null,
+        "language": "en",
+        "needs_human": false
+      },
+      "raw_pred": "{\"category\": \"payment_failed\", \"priority\": \"P1\", \"amount_paise\": null, \"txn_date\": null, \"txn_id\": null, \"channel\": null, \"language\": \"en\", \"needs_human\": false}",
+      "mismatched_fields": [
+        "category",
+        "priority"
+      ],
+      "diffs": {
+        "category": {
+          "gold": "account_access",
+          "pred": "payment_failed"
+        },
+        "priority": {
+          "gold": "P2",
+          "pred": "P1"
+        }
+      },
+      "root_cause_category": "SECURITY_LOCKOUT_MISCLASSIFIED_AS_PAYMENT_FAILURE",
+      "explanation": "Customer contacted regarding authentication/security credential issues (PIN/passcode lockout). SCHEMA specifies category 'account_access' for PIN resets and locked accounts. The model incorrectly predicted 'payment_failed', triggering downstream priority over-escalation to P1."
+    }
+  ],
+  "roadmap": [
+    {
+      "title": "Targeted Counterfactual Synthetic Data Generation & Hard-Negative Mining",
+      "theme": "Data Quality & Edge-Case Coverage",
+      "timeline_days": "Days 1-2",
+      "rationale": "The audit and error analysis reveal that 70% of exact match errors stem from boundary condition failures on Priority (86.0% acc) and Needs Human (91.0% acc), particularly around the \u20b950,000 P1 threshold and subtle repeat-contact phrasing ('Teesri baar', 'again and again').",
+      "implementation": "Synthesize 800 high-fidelity contrastive pairs using an LLM pipeline with verified business rule validators:\n1. Threshold Boundary Pairs: Tickets with amounts \u20b949,500 (P2) vs \u20b950,500 (P1), expressed in diverse Indian notations ('49.5k', '0.5 lakh', '\u20b950,000').\n2. Repeat Contact Variations: Augment tickets with explicit Hindi and English repeat phrases ('doosri baar', 'raising this again', 'previous ticket #1234') across all categories.\n3. Hard-Negative Category Distinctions: Counterfactuals separating failed wallet top-ups (payment_failed) from refund requests, and cashback offer disputes (offers) from transaction failures.",
+      "expected_impact": "+5.0% to +7.0% exact match improvement, resolving threshold boundary confusion."
+    },
+    {
+      "title": "Field-Weighted Loss Masking & Asymmetric Class Penalty",
+      "theme": "Loss Function Engineering",
+      "timeline_days": "Day 3",
+      "rationale": "Currently, uniform cross-entropy loss is applied across all completion tokens. Because structural tokens and high-frequency fields (amount_paise, txn_id, language) achieve 100% accuracy, the gradient updates under-prioritize subtle semantic fields like priority and needs_human.",
+      "implementation": "Modify the completion-loss mask in `train.py` to apply dynamic token-level loss multipliers:\n1. Apply a 3.0x loss weight to the values of 'priority' and 'needs_human'.\n2. Apply a 2.0x penalty for false negative under-escalations on high-risk tickets (P1 predicted as P2/P3).\n3. Apply a 2.5x penalty on non-null channel predictions when the category is 'account_access', 'kyc', or 'other'.",
+      "expected_impact": "+3.0% to +4.5% boost on priority accuracy, eliminating catastrophic business escalations."
+    },
+    {
+      "title": "Direct Preference Optimization (DPO / RLAIF) for Schema Invariant Enforcement",
+      "theme": "Alignment & Calibration",
+      "timeline_days": "Days 4-5",
+      "rationale": "Supervised fine-tuning (SFT) teaches format and typical patterns, but struggles with rigid negative constraints (e.g. channel must be null for KYC, or priority must be P2 for account_access even with no transaction).",
+      "implementation": "Run a lightweight DPO training stage on top of the SFT checkpoint using 600 preference pairs:\n- Prompt: Support ticket text.\n- Chosen: Ground truth JSON adhering strictly to schema invariants.\n- Rejected: Negative completions harvested from dev/train prediction errors (e.g. hallucinated channel='upi' on KYC tickets, P3 predicted on account_access, '2026-01-01' fallback dates).\n- LoRA Configuration: Low learning rate (5e-6) with beta=0.1 to avoid catastrophic forgetting.",
+      "expected_impact": "Completely eliminates schema constraint violations (channel on non-tx tickets) and enforces priority floors."
+    },
+    {
+      "title": "Date Normalization & Relative Anchor Synthetic Engine",
+      "theme": "Feature Engineering & Data Augmentation",
+      "timeline_days": "Day 5",
+      "rationale": "All 5 txn_date errors in dev resulted from the model falling back to a dummy placeholder ('2026-01-01') when confronted with relative dates ('yesterday', '3 days ago'), missing years ('Jul 15'), or non-ISO dates ('27/06/2026').",
+      "implementation": "Create a dedicated date arithmetic generator injecting 500 synthetic examples into the training pool:\n1. Calendar Arithmetic: Generate tickets with varying Received dates and explicit relative offsets ('yesterday', '3 days ago', 'last Tuesday', 'parso', 'kal') with ground-truth ISO calculations.\n2. Format Permutations: Include Indian DD/MM/YYYY, DD-MM-YY, Month DD, and ordinal notations ('2nd July 2026').\n3. Prior Email Anchors: Include distractor dates inside quoted email blocks (`> On 12 Jul 2026...`) ensuring the model learns to ignore quoted timestamps.",
+      "expected_impact": "Achieves 100% accuracy on txn_date (+2.5% dev exact match recovery)."
+    },
+    {
+      "title": "Two-Stage Decoupled Triage or Deliberation Scratchpad Architecture",
+      "theme": "Model Architecture & Inference",
+      "timeline_days": "Days 6-7",
+      "rationale": "Direct single-pass JSON generation forces the model to predict category before parsing all transaction fields, causing error cascades where a category mistake forces a downstream priority error.",
+      "implementation": "Evaluate two deployment patterns:\nOption A (Scratchpad Generation): Fine-tune model to output a concise 1-sentence reasoning chain before the JSON (e.g. `Thought: Disputed amount is \u20b965,000 (>50k), category is refund, customer contacted 2nd time -> P1, needs_human=true. Output: {...}`). During evaluation, extract the final JSON block.\nOption B (Multi-Task Decoupling): Train a shared LoRA backbone with two light heads or sequential prompts: Stage 1 extracts transactional entities; Stage 2 applies deterministic business logic rules.",
+      "expected_impact": "+4.0% to +6.0% exact match improvement, decoupling entity extraction from deterministic rule calculation."
+    }
+  ]
+}
