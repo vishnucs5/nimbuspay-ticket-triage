@@ -4,3 +4,10 @@ __pycache__/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Do not push candidate pack data or base model
+candidate_pack/
+data/train_clean.jsonl
+data/*.jsonl
+!predictions_test.jsonl
+
