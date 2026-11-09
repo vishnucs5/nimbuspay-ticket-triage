@@ -446,6 +446,12 @@ def run_experiment(
                 )
             gen_text = tokenizer.decode(out_tokens[0][inputs["input_ids"].shape[1]:], skip_special_tokens=True).strip()
             pred_rows.append({"id": cid, "output": gen_text})
+
+        # Free GPU memory between experiment runs
+        del model
+        del base_model
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
     else:
         logger.info("Generating calibrated empirical predictions for %s (offline/dry-run mode)...", exp_name)
         for idx, row in enumerate(gold_rows):

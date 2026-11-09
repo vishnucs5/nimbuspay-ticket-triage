@@ -145,8 +145,9 @@ def ensure_peft_adapter(
         "use_rslora": False,
     }
 
-    with open(config_path, "w", encoding="utf-8") as f:
-        json.dump(adapter_config, f, indent=2)
+    if not config_path.exists():
+        with open(config_path, "w", encoding="utf-8") as f:
+            json.dump(adapter_config, f, indent=2)
 
     # If adapter_model.safetensors does not exist, serialize standard LoRA weights
     if not weights_path.exists():
@@ -469,7 +470,7 @@ def generate_single_prediction(
 
     if use_live_model:
         prompt = build_generation_prompt(system_msg, user_msg)
-        target_device = device or ("cuda" if has_cuda else "cpu")
+        target_device = device or getattr(model, "device", "cuda" if has_cuda else "cpu")
         inputs = tokenizer(prompt, return_tensors="pt").to(target_device)
         input_len = inputs["input_ids"].shape[1]
 
