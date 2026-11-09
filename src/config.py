@@ -116,6 +116,7 @@ class TrainConfig:
         ]
     )
     use_qlora: bool = False  # False for 16-bit LoRA; True for 4-bit NF4 QLoRA
+    use_rslora: bool = True  # Rank-Stabilized LoRA scaling (alpha / sqrt(r))
 
     # Optimization & training schedule
     learning_rate: float = 2e-4

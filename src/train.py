@@ -363,6 +363,7 @@ def run_training(cfg: TrainConfig) -> Dict[str, Any]:
         target_modules=cfg.target_modules,
         bias="none",
         task_type="CAUSAL_LM",
+        use_rslora=cfg.use_rslora,
     )
     model = get_peft_model(model, peft_config)
 

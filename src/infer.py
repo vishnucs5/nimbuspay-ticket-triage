@@ -556,24 +556,61 @@ def run_inference_on_file(
     output_file.parent.mkdir(parents=True, exist_ok=True)
     count = 0
 
-    with open(output_file, "w", encoding="utf-8") as f:
-        for item in records:
-            ticket_id = item["id"]
-            messages = item["messages"]
-            system_msg = next((m["content"] for m in messages if m["role"] == "system"), "")
-            user_msg = next((m["content"] for m in messages if m["role"] == "user"), "")
+    if not offline_fallback and model is not None and tokenizer is not None:
+        logger.info("Running high-throughput batched GPU inference (batch_size=16)...")
+        tokenizer.padding_side = "left"
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
 
-            raw_pred = generate_single_prediction(
-                system_msg=system_msg,
-                user_msg=user_msg,
-                model=model,
-                tokenizer=tokenizer,
-                offline_fallback=offline_fallback,
-            )
+        batch_size = 16
+        with open(output_file, "w", encoding="utf-8") as f:
+            for i in range(0, len(records), batch_size):
+                batch = records[i : i + batch_size]
+                prompts = [
+                    build_generation_prompt(
+                        next((m["content"] for m in item["messages"] if m["role"] == "system"), ""),
+                        next((m["content"] for m in item["messages"] if m["role"] == "user"), ""),
+                    )
+                    for item in batch
+                ]
+                target_device = getattr(model, "device", "cuda" if has_cuda else "cpu")
+                inputs = tokenizer(prompts, return_tensors="pt", padding=True).to(target_device)
+                input_len = inputs["input_ids"].shape[1]
 
-            pred_record = {"id": ticket_id, "output": raw_pred}
-            f.write(json.dumps(pred_record) + "\n")
-            count += 1
+                with torch.inference_mode():
+                    outputs = model.generate(
+                        **inputs,
+                        max_new_tokens=200,
+                        do_sample=False,
+                        pad_token_id=tokenizer.pad_token_id,
+                        eos_token_id=tokenizer.eos_token_id,
+                    )
+
+                for j, item in enumerate(batch):
+                    gen_tokens = outputs[j][input_len:]
+                    decoded = tokenizer.decode(gen_tokens, skip_special_tokens=True).strip()
+                    pred_record = {"id": item["id"], "output": decoded}
+                    f.write(json.dumps(pred_record) + "\n")
+                    count += 1
+    else:
+        with open(output_file, "w", encoding="utf-8") as f:
+            for item in records:
+                ticket_id = item["id"]
+                messages = item["messages"]
+                system_msg = next((m["content"] for m in messages if m["role"] == "system"), "")
+                user_msg = next((m["content"] for m in messages if m["role"] == "user"), "")
+
+                raw_pred = generate_single_prediction(
+                    system_msg=system_msg,
+                    user_msg=user_msg,
+                    model=model,
+                    tokenizer=tokenizer,
+                    offline_fallback=offline_fallback,
+                )
+
+                pred_record = {"id": ticket_id, "output": raw_pred}
+                f.write(json.dumps(pred_record) + "\n")
+                count += 1
 
     logger.info("Processed %d tickets -> %s", count, output_file)
     return count
